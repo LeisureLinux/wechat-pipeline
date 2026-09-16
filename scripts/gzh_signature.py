@@ -27,6 +27,11 @@ import re
 import sys
 
 ACCOUNTS = {
+    # lore 仓库内容发到 LeisureLinux 公众号，作者署名统一用 FreeLAMP.com（文字稿也用这句）
+    "LeisureLinux": {
+        "author": "FreeLAMP.com",
+        "blurb": "我是 FreeLAMP.com，专注开源安全工具与工程实践，持续分享安全入门与前沿技术的观察。",
+    },
     "ZEN": {
         "author": "退休前后",
         "blurb": "我是退休前后，关注健康科学与生活方式的证据，陪你把退休前后的日子过得更明白。",
@@ -37,20 +42,23 @@ ACCOUNTS = {
 SIG_COMMENT = "  <!-- 尾部作者签名区（组件 16） -->"
 
 
-def build_block(author: str, blurb: str, tagline: str) -> str:
+def build_block(author: str, blurb: str, tagline: str = "") -> str:
+    tail = (
+        '      <p style="text-align:right;font-size:12px;color:#A1A1AA;margin:18px 0 0;'
+        'letter-spacing:1px;">\n'
+        f'        <span leaf="">{tagline}</span>\n'
+        '      </p>\n'
+    ) if tagline else ""
     return f"""{SIG_COMMENT}
   <section style="padding:0 10px 24px;">
     <section style="border-top:1px solid #E4E4E7;padding-top:28px;">
       <p style="margin-bottom:16px;font-size:15px;line-height:1.72;color:#52525B;text-align:justify;letter-spacing:0.3px;">
         <span leaf="">{blurb}</span>
       </p>
-      <p style="margin-bottom:0;font-size:15px;line-height:1.72;color:#52525B;text-align:justify;letter-spacing:0.3px;">
+      <p style="margin-bottom:{'0' if not tagline else '0'};font-size:15px;line-height:1.72;color:#52525B;text-align:justify;letter-spacing:0.3px;">
         <span leaf="">如果你觉得今天这篇有收获，欢迎</span><strong style="color:#27272A;"><span leaf="">点赞、在看、转发</span></strong><span leaf="">三连，我们下篇见。</span>
       </p>
-      <p style="text-align:right;font-size:12px;color:#A1A1AA;margin:18px 0 0;letter-spacing:1px;">
-        <span leaf="">{tagline}</span>
-      </p>
-    </section>
+{tail}    </section>
   </section>
 """
 
@@ -124,7 +132,7 @@ def main():
     conf = dict(ACCOUNTS[args.account])
     conf["author"] = args.author or conf["author"]
     conf["blurb"] = args.blurb or conf["blurb"]
-    conf["tagline"] = args.tagline or conf["tagline"]
+    conf["tagline"] = args.tagline or conf.get("tagline", "")
     block = build_block(**conf)
 
     paths = []
