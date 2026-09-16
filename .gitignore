@@ -1,0 +1,22 @@
+# 字节码与缓存
+__pycache__/
+*.pyc
+*.pyo
+
+# 运行时日志（含 media_id，不入库）
+*.log
+
+# 本地令牌缓存（正常在 ~/.openclaw，此处兜底）
+access_token_cache.json
+token_cache.json
+
+# 编辑器
+*.swp
+*~
+.vscode/
+.idea/
+.DS_Store
+
+# 临时文件
+*.tmp
+*.bak
